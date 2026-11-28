@@ -1,0 +1,37 @@
+# Bouwt de Windows- en Mac-versie automatisch (handmatig starten via "Run workflow").
+# Mac: een Intel-versie (x86_64, draait op elke Mac; op Apple Silicon via Rosetta) en een Apple Silicon-versie (arm64).
+# GitHub heeft soms te weinig Apple Silicon-Macs; daarom is er altijd ook een Intel-versie.
+name: Bouwen
+
+on:
+  workflow_dispatch:
+    inputs:
+      systemen:
+        description: 'Welke systemen (JSON-lijst)'
+        default: '["windows-latest", "macos-15-intel", "macos-latest"]'
+
+jobs:
+  bouw:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ${{ fromJSON(inputs.systemen) }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: python -m pip install -r requirements.txt
+      - run: python bouwen.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: m365-beheer-${{ matrix.os }}
+          path: app/uitvoer/**

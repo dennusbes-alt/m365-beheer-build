@@ -1,0 +1,21 @@
+# Geheimen (nooit in git)
+.env
+*.pem
+id_*
+*.key
+
+# Bouw- en tijdelijke bestanden
+app/.venv/
+app/.venv-mac/
+app/frontend/node_modules/
+app/frontend/dist/
+app/dist/
+app/build/
+app/uitvoer/
+__pycache__/
+*.pyc
+.DS_Store
+
+# Oude PowerShell-versie (alleen als zip bewaard)
+*.zip
+vorige versie/

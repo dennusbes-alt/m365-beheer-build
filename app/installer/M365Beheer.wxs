@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  MSI voor Microsoft 365 beheer (WiX Toolset 3), bedoeld voor uitrol via Intune (Line-of-business app).
+
+  - Per gebruiker: installeert in %LOCALAPPDATA%\Programs\Justdata\Microsoft 365 beheer, zonder beheerdersrechten.
+    Dat is dezelfde map als de Setup.exe, zodat de app zichzelf daarna kan bijwerken.
+  - Intune: kies bij het toewijzen de gebruikerscontext. Stil installeren gaat vanzelf (msiexec /qn).
+  - Een nieuwere MSI werkt een oudere bij (MajorUpgrade); verwijderen ruimt ook bestanden van latere updates op.
+
+  Gebouwd door bouwen.py met heat (alle bestanden van de app), candle en light.
+-->
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <Product Id="*" Name="Microsoft 365 beheer" Language="1043" Codepage="1252" Version="$(var.Versie)"
+           Manufacturer="Justdata BV" UpgradeCode="6E1C8B0A-3F2D-4C59-9B7E-4A1D2C3B5E60">
+    <Package InstallerVersion="500" Compressed="yes" InstallScope="perUser" InstallPrivileges="limited"
+             Description="Microsoft 365 beheer $(var.Versie)" Manufacturer="Justdata BV" SummaryCodepage="1252" />
+
+    <MajorUpgrade DowngradeErrorMessage="Er is al een nieuwere versie van Microsoft 365 beheer geinstalleerd." AllowSameVersionUpgrades="yes" />
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+    <!-- Draait de app nog, dan eerst afsluiten (anders zijn bestanden in gebruik) -->
+    <util:CloseApplication Id="SluitApp" Target="Microsoft 365 beheer.exe" CloseMessage="yes" TerminateProcess="0" RebootPrompt="no" />
+
+    <Icon Id="AppIcon.ico" SourceFile="$(var.Icoon)" />
+    <Property Id="ARPPRODUCTICON" Value="AppIcon.ico" />
+    <Property Id="ARPURLINFOABOUT" Value="https://m365admin.justsecure.nl/download/" />
+    <Property Id="ARPNOMODIFY" Value="1" />
+    <Property Id="ARPNOREPAIR" Value="1" />
+    <Property Id="DISABLEADVTSHORTCUTS" Value="1" />
+
+    <!-- Installatiemap bij verwijderen terugvinden, zodat ook bestanden van latere updates worden opgeruimd -->
+    <Property Id="M365MAP">
+      <RegistrySearch Id="ZoekMap" Root="HKCU" Key="Software\Justdata\M365Beheer" Name="InstallMap" Type="raw" />
+    </Property>
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="LocalAppDataFolder">
+        <Directory Id="ProgramsMap" Name="Programs">
+          <Directory Id="JustdataMap" Name="Justdata">
+            <Directory Id="INSTALLFOLDER" Name="Microsoft 365 beheer" />
+          </Directory>
+        </Directory>
+      </Directory>
+      <Directory Id="ProgramMenuFolder" />
+      <Directory Id="DesktopFolder" />
+    </Directory>
+
+    <DirectoryRef Id="INSTALLFOLDER">
+      <Component Id="Basis" Guid="3B7D0E2A-9C41-4F6B-8E25-1D7A6C9F0B13">
+        <RegistryValue Root="HKCU" Key="Software\Justdata\M365Beheer" Name="InstallMap" Type="string" Value="[INSTALLFOLDER]" KeyPath="yes" />
+        <RegistryValue Root="HKCU" Key="Software\Justdata\M365Beheer" Name="Versie" Type="string" Value="$(var.Versie)" />
+        <!-- Vermelding van de PowerShell-installer vervalt: de MSI staat zelf in Instellingen > Apps -->
+        <RemoveRegistryKey Root="HKCU" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\JustdataM365Beheer" Action="removeOnInstall" />
+        <RemoveFolder Id="WegInstall" On="uninstall" />
+        <RemoveFolder Id="WegJustdata" Directory="JustdataMap" On="uninstall" />
+        <RemoveFolder Id="WegPrograms" Directory="ProgramsMap" On="uninstall" />
+        <util:RemoveFolderEx On="uninstall" Property="M365MAP" />
+      </Component>
+    </DirectoryRef>
+
+    <DirectoryRef Id="ProgramMenuFolder">
+      <Component Id="StartmenuSnelkoppeling" Guid="8F2C4A61-7D3E-4B90-A5C8-2E6F1B9D4A27">
+        <Shortcut Id="StartSnel" Name="Microsoft 365 beheer" Description="Microsoft 365 beheer (Justdata)"
+                  Target="[INSTALLFOLDER]Microsoft 365 beheer.exe" WorkingDirectory="INSTALLFOLDER" />
+        <RegistryValue Root="HKCU" Key="Software\Justdata\M365Beheer" Name="Startmenu" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+    <DirectoryRef Id="DesktopFolder">
+      <Component Id="BureaubladSnelkoppeling" Guid="C4E91B27-5A6D-4F38-9B0E-7D2A3F8C1E54">
+        <Shortcut Id="BureauSnel" Name="Microsoft 365 beheer" Description="Microsoft 365 beheer (Justdata)"
+                  Target="[INSTALLFOLDER]Microsoft 365 beheer.exe" WorkingDirectory="INSTALLFOLDER" />
+        <RegistryValue Root="HKCU" Key="Software\Justdata\M365Beheer" Name="Bureaublad" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+
+    <Feature Id="App" Title="Microsoft 365 beheer" Level="1">
+      <ComponentGroupRef Id="AppBestanden" />
+      <ComponentRef Id="Basis" />
+      <ComponentRef Id="StartmenuSnelkoppeling" />
+      <ComponentRef Id="BureaubladSnelkoppeling" />
+    </Feature>
+  </Product>
+</Wix>

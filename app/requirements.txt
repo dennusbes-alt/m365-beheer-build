@@ -1,0 +1,7 @@
+msal==1.39.0
+requests==2.34.2
+pywebview==6.2.1
+pyinstaller==6.22.3
+fpdf2==2.8.3
+keyring==25.6.0
+anthropic==2.14.0

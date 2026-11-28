@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Microsoft 365 beheer downloaden - Justdata</title>
+<style>
+:root{--hd:#1b7ea9;--navy:#003f6b;--cy:#00aeef;--sl:#323841;--bg:#f2f6f9;--tx:#1e2a35;--mu:#5d6b7a;--bd:#dbe4ea;--acl:#e3f4fb}
+*{box-sizing:border-box}body{margin:0;font:15px/1.55 Lato,"Segoe UI",system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx)}
+header{background:var(--hd);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:16px}
+.logo{background:#fff;border-radius:10px;padding:6px 12px;display:flex}.logo img{height:32px}
+header b{font-size:17px;font-weight:900}
+main{max-width:980px;margin:0 auto;padding:30px 16px 60px}
+h1{color:var(--navy);font-size:28px;margin:0 0 6px}.sub{color:var(--mu);margin:0 0 26px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.card{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:22px;box-shadow:0 1px 3px rgba(0,63,107,.06)}
+.card.jij{border:2px solid var(--cy);box-shadow:0 6px 24px rgba(0,174,239,.15)}
+.card h2{margin:0 0 4px;color:var(--navy);font-size:20px;display:flex;align-items:center;gap:10px}
+.tag{font-size:11px;font-weight:700;background:var(--acl);color:#00608a;border-radius:99px;padding:2px 9px}
+.ver{color:var(--mu);font-size:13px;margin-bottom:14px}
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--cy);color:#00263d;font-weight:700;text-decoration:none;padding:11px 18px;border-radius:10px;border:0;cursor:pointer;font-size:15px}
+.btn:hover{background:#26bdf5}.btn.s{background:#fff;border:1px solid var(--bd);color:var(--navy);padding:6px 12px;font-size:13px}
+ol{padding-left:20px;margin:16px 0 0}li{margin:6px 0}
+.code{display:flex;gap:8px;align-items:center;margin-top:8px}
+code{flex:1;font:12.5px ui-monospace,Menlo,Consolas,monospace;background:var(--bg);border:1px dashed #c7d3dc;border-radius:8px;padding:8px 10px;word-break:break-all}
+.hint{color:var(--mu);font-size:13px;margin-top:14px}
+footer{color:var(--mu);font-size:12.5px;text-align:center;margin-top:30px}
+</style>
+</head>
+<body>
+<header><div class="logo"><img src="logo.png" alt="Justdata"></div><b>Microsoft 365 beheer</b></header>
+<main>
+  <h1>Microsoft 365 beheer installeren</h1>
+  <p class="sub">Het installatiebestand haalt altijd de nieuwste versie op. Daarna werkt de app zichzelf bij. Je hebt geen beheerdersrechten nodig.</p>
+  <div class="grid">
+    <section class="card" id="win">
+      <h2>Windows <span class="tag" hidden>jouw computer</span></h2>
+      <div class="ver" id="vwin">Versie wordt opgehaald...</div>
+      <a class="btn" id="setup" href="Microsoft-365-beheer-Setup.exe" download>Setup.exe downloaden</a>
+      <ol>
+        <li>Open <b>Microsoft-365-beheer-Setup.exe</b> en klik op <b>Installeren</b>.</li>
+        <li>Toont Windows "Windows heeft uw pc beschermd"? Klik op <b>Meer informatie</b> en dan <b>Toch uitvoeren</b>.</li>
+        <li>De app staat daarna in het Startmenu (en op het bureaublad). Verwijderen kan via Instellingen &gt; Apps.</li>
+      </ol>
+      <div class="hint" id="msiblok" hidden><b>Voor Intune:</b> <a id="msi" href="Microsoft-365-beheer.msi" download>MSI downloaden</a>.
+        Voeg hem toe als <i>Line-of-business app</i> en wijs hem toe aan gebruikers (installatie per gebruiker, zonder beheerdersrechten).
+        Daarna werkt de app zichzelf bij.</div>
+      <div class="hint">Liever via PowerShell (zonder Setup.exe, haalt ook altijd de nieuwste versie):</div>
+      <div class="code"><code>irm https://m365admin.justsecure.nl/download/install-windows.ps1 | iex</code><button class="btn s" data-copy>Kopieer</button></div>
+    </section>
+    <section class="card" id="mac">
+      <h2>macOS <span class="tag" hidden>jouw computer</span></h2>
+      <div class="ver" id="vmac">Versie wordt opgehaald...</div>
+      <a class="btn" id="dmg" href="Microsoft-365-beheer.dmg" download>DMG downloaden</a>
+      <ol>
+        <li>Open <b>Microsoft-365-beheer.dmg</b> en sleep de app naar <b>Programma's</b>.</li>
+        <li>Open de app. Meldt macOS dat de ontwikkelaar niet geverifieerd kan worden? Ga naar <b>Systeeminstellingen &gt; Privacy en beveiliging</b>, scroll naar beneden en klik op <b>Toch openen</b>. Dat is eenmalig.</li>
+        <li>Daarna werkt de app zichzelf bij. Alleen voor Macs met Apple Silicon (M1 of nieuwer).</li>
+      </ol>
+      <div class="hint">Liever zonder die eenmalige melding? Plak deze regel in <b>Terminal</b>:</div>
+      <div class="code"><code>curl -fsSL https://m365admin.justsecure.nl/download/install-mac.sh | bash</code><button class="btn s" data-copy>Kopieer</button></div>
+    </section>
+  </div>
+  <footer>Justdata BV · Full service ICT beheer · Er wordt niets opgeslagen: bij afsluiten ben je automatisch afgemeld.</footer>
+</main>
+<script>
+(function () {
+  var mac = /Mac/i.test(navigator.platform || navigator.userAgent);
+  var jij = document.getElementById(mac ? 'mac' : 'win');
+  jij.classList.add('jij'); jij.querySelector('.tag').hidden = false;
+  if (mac) jij.parentNode.insertBefore(jij, jij.parentNode.firstChild);
+  function versie(kanaal, el) {
+    fetch('../updates/' + kanaal + '/latest.json?t=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+      .then(function (m) {
+        document.getElementById(el).textContent = 'Nieuwste versie: ' + m.version + (m.date ? ' (' + m.date + ')' : '');
+        // Altijd de Setup.exe met versienummer: die is nooit verouderd door de cache
+        var knop = document.getElementById('setup');
+        if (kanaal === 'windows' && m.setup && m.setup.file && knop) knop.href = m.setup.file;
+        var dmg = document.getElementById('dmg');
+        if (kanaal === 'mac' && m.dmg && m.dmg.file && dmg) dmg.href = m.dmg.file;
+        var msi = document.getElementById('msi');
+        if (kanaal === 'windows' && m.msi && m.msi.file && msi) { msi.href = m.msi.file; document.getElementById('msiblok').hidden = false; }
+      })
+      .catch(function () { document.getElementById(el).textContent = 'Nog geen versie beschikbaar.'; });
+  }
+  versie('windows', 'vwin'); versie('mac', 'vmac');
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.onclick = function () {
+      var t = b.previousElementSibling.textContent;
+      navigator.clipboard.writeText(t).then(function () { b.textContent = 'Gekopieerd'; setTimeout(function () { b.textContent = 'Kopieer'; }, 2000); });
+    };
+  });
+})();
+</script>
+</body>
+</html>
